@@ -2,19 +2,28 @@ import 'dotenv/config';
 import { client } from '../src/services/redis';
 
 const run = async () => {
-  await client.hSet('car', {
+  await client.hSet('car1', {
     color: 'red',
     year: 1950
   });
 
-  const car = await client.hGetAll('car#123');
+  await client.hSet('car2', {
+    color: 'green',
+    year: 1955
+  });
 
-  if (!Object.keys(car).length) {
-    console.log('Car not found, respond with 404');
-    return;
-  }
+  await client.hSet('car3', {
+    color: 'blue',
+    year: 1960
+  });
 
-  console.log(car);
+  const result = await Promise.all([
+    client.hGetAll('car1'),
+    client.hGetAll('car2'),
+    client.hGetAll('car3')
+  ]);
+
+  console.log(result);
 };
 
 run();
